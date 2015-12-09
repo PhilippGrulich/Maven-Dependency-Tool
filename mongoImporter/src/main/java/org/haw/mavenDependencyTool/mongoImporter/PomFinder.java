@@ -15,7 +15,9 @@ public class PomFinder   {
 	public Stream<Path> search() throws IOException {
 		Path path = Paths.get(rootDir);
 		return Files.walk(path, 20).parallel()
-		.filter(p -> 		
-		p.toString().endsWith(".pom"));		
+		.filter(p -> 			
+			p.toFile().isFile() && p.toString().endsWith(".pom")
+		);
+			
 	}	
 }
