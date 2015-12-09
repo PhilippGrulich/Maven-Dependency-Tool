@@ -1,0 +1,32 @@
+digraph G {
+
+//GraphViz Attribute: http://www.graphviz.org/content/attrs
+//Pom-Beispiel: https://repo1.maven.org/maven2/com/3pillarglobal/labs/omni-calendar/2.1/omni-calendar-2.1.pom
+//GraphViz-Befehl zum Erzeugen der png-Datei: dot -Tpng graph.gv -o graph.png
+
+/*
+ * Idee: Wird ein pom-Knoten angelegt, wird geschaut, ob dieser bereits vorhanden ist:
+ * wenn ja -> ergänze ggf. Attribute (z.B. mit MERGE-Befehl in Cypher)
+ * wenn nein -> lege neuen Knoten mit allen Attributen an 
+ * 
+ * Ebenfall wird geschaut ob die die Dependency-Knoten vorhanden sind:
+ * wenn ja -> Beziehung anlegen
+ * wenn nein -> neuen Knoten und Beziehung anlegen. Fehlen Attributwerte oder haben Attribute wie z.B. Version keinen Zahlenwert, 
+ * sondern z.B. ${project.calendar.api.version}, wird dort nichts oder ein Platzhalter eingetragen. Soll dieser Knoten angelegt werden, 
+ * werden die fehlenden Attribute ergänzt (s. oben).
+*/
+
+"com.3pillarglobal.labs" [ label="groupId: com.3pillarglobal.labs \n artifactId: omni-calendar \n version: 2.1 \n description: Omni Calendar"];
+"org.mnode.ical4j" [ label="groupId: org.mnode.ical4j \n artifactId: ical4j \n version: 1.0.5.2 \n description: _" ];
+"javax.mail" [ label="groupId: javax.mail \n artifactId: mail \n version: 1.4.5 \n description: _" ];
+"com.google.apis" [ label="groupId: com.google.apis \n artifactId: google-api-services-calendar \n version: _ \n description: _" ];
+"com.google.http-client" [ label="groupId: com.google.http-client \n artifactId: google-http-client-jackson2 \n version: _ \n description: _" ];
+"com.google.oauth-client" [ label="groupId: com.google.oauth-client \n artifactId: google-oauth-client-jetty \n version: _ \n description: _" ];
+
+"com.3pillarglobal.labs" -> "org.mnode.ical4j" [label="Label: uses"];
+"com.3pillarglobal.labs" -> "javax.mail" [label="Label: uses"];
+"com.3pillarglobal.labs" -> "com.google.apis" [label="Label: uses"];
+"com.3pillarglobal.labs" -> "com.google.http-client" [label="Label: uses"];
+"com.3pillarglobal.labs" -> "com.google.oauth-client" [label="Label: uses"];
+
+}
