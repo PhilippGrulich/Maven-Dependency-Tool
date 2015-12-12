@@ -16,6 +16,7 @@ import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 
 public class Crawler extends WebCrawler {
+	private static int count = 0;
 
 	private static Path storageFolder;
 
@@ -38,8 +39,8 @@ public class Crawler extends WebCrawler {
 	 * parameter to make the decision.
 	 */
 	@Override
-	public boolean shouldVisit(Page referringPage, WebURL url) {		
-		String href = url.getURL();
+	public boolean shouldVisit(Page referringPage, WebURL url) {
+		String href = url.getURL();			
 		return href.startsWith(Main.RemoteDir) && (href.endsWith("/")||href.endsWith(".pom"));
 	}
 
@@ -50,6 +51,9 @@ public class Crawler extends WebCrawler {
 	@Override
 	public void visit(Page page) {
 		String url = page.getWebURL().getURL();		
+		if(count++%1000==0){
+			System.out.println(count + ": Aktuelle URL "+ url);
+		}	
 		if(!url.endsWith(".pom"))
 			return;
 					

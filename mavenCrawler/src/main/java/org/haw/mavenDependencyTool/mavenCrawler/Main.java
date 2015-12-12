@@ -17,8 +17,8 @@ public class Main
 {
 	
 	public static String RemoteDir = "http://central.maven.org/maven2/";
-	public static String SaveToDir = "C:\\Users\\Philipp\\Documents\\test\\data\\";
-	public static String TempDataDir = "C:\\Users\\Philipp\\Documents\\test\\storrage";
+	public static String SaveToDir = "/home/nosql/Aufgabe5/mavenNeu/result";
+	public static String TempDataDir = "/home/nosql/Aufgabe5/mavenNeu/temp";
     public static void main( String[] args ) throws Exception
     {
     	
@@ -34,7 +34,7 @@ public class Main
          * However, since this is against crawling policies and puts huge load on servers (and they might block you!),
          * by default crawler4j waits at least 200 milliseconds between requests. However, this parameter can be tuned:
          */
-        config.setPolitenessDelay(200);
+        config.setPolitenessDelay(40);
         	
         /*
          * Instantiate the controller for this crawl.
