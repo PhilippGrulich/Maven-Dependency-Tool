@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.haw.mavenDependencyTool</groupId>
-	<artifactId>neo4JImporter</artifactId>
+	<artifactId>gitHubPomFinder</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>neo4JImporter</name>
+	<name>gitHubPomFinder</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -22,14 +22,14 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>3.2.0</version>
-		</dependency>
+			<groupId>org.kohsuke</groupId>
+			<artifactId>github-api</artifactId>
+			<version>1.71</version>
+		</dependency>		
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.5</version>
+			<groupId>com.squareup.okhttp</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>2.6.0</version>
 		</dependency>
 	</dependencies>
 </project>
