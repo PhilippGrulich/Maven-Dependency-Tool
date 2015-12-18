@@ -10,8 +10,10 @@ public class App
     {
     	Neo4JImportWorker neo4JImporter = new Neo4JImportWorker();
 
-    	neo4JImporter.getMongoData().forEach(project -> System.out.println(project));
+//    	neo4JImporter.getMongoData();
     	
+//    	neo4JImporter.importNeo4J(neo4JImporter.getMongoData());
+    neo4JImporter.getMongoData().forEach(p-> {int i = 0;});
     	neo4JImporter.close();
     	
     }

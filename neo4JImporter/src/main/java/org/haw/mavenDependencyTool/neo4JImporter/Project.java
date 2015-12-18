@@ -1,16 +1,20 @@
 package org.haw.mavenDependencyTool.neo4JImporter;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 public class Project {
+	String id;
 	Item parent;
 	String artifactId;
 	String name;
-	String version;
+	JsonElement version;
 	String groupId;
 	String description;
-	Dependencies dependencies;
+	JsonElement dependencies;
 	
-	public Project(Item parent, String artifactId, String name, String version,
-			String groupId, String description, Dependencies dependencies) {
+	public Project(Item parent, String artifactId, String name, JsonElement version,
+			String groupId, String description, JsonElement dependencies) {
 		super();
 		this.parent = parent;
 		this.artifactId = artifactId;
@@ -21,40 +25,35 @@ public class Project {
 		this.dependencies = dependencies;
 	}
 
-	public Item getParent() {
-		return parent;
-	}
-
-	public String getArtifactId() {
-		return artifactId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public String getGroupID() {
-		return groupId;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public Dependencies getDependencies() {
-		return dependencies;
-	}
-
 	@Override
 	public String toString() {
 		return "Project [parent=" + parent + ", artifactId=" + artifactId
 				+ ", name=" + name + ", version=" + version + ", groupId="
 				+ groupId + ", description=" + description + ", dependencies="
 				+ dependencies + "]";
+	}
+	
+	public String getVersion(){
+		if(version != null && version.isJsonPrimitive())
+			return version.getAsString();
+		else if(version != null)
+			return version.getAsJsonObject().get("$numberLong").getAsString();
+		else
+			return parent.getVersion();
+	}
+	
+	public String getGroupId(){
+		if(groupId != null)
+			return groupId;
+		return parent.groupId;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	

@@ -19,18 +19,20 @@ public class DependencyAdapater extends TypeAdapter<Dependencies> {
 		
 		GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapterFactory(
 				new ArrayAdapterFactory());
-		gsonBuilder.registerTypeAdapter(Dependencies.class,new DependencyAdapater());
+//		gsonBuilder.registerTypeAdapter(Dependencies.class,new DependencyAdapater());
 		
 		Gson gson = gsonBuilder.create();
 		if (reader.peek() == JsonToken.BEGIN_OBJECT) {
 			Dependencies inning = gson.fromJson(reader, Dependencies.class);
 			return inning;
+		} else if (reader.peek() == JsonToken.STRING) {
+
+			return new Dependencies(new ArrayList<Item>());
+
 		}
-//		} else if (reader.peek() == JsonToken.STRING) {
-//
-//			return new Dependencies(null);
-//
-//		}
+		else if (reader.peek() == JsonToken.NAME)
+			System.out.println("found name");
+		
 		return new Dependencies(new ArrayList<Item>());
 	}
 
