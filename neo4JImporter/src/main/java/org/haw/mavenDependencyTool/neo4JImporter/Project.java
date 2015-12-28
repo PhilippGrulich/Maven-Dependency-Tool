@@ -1,5 +1,8 @@
 package org.haw.mavenDependencyTool.neo4JImporter;
 
+import java.util.List;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -54,6 +57,21 @@ public class Project {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public List<Item> getDependency(){
+		if(this.dependencies.isJsonObject()){
+			JsonObject obj = this.dependencies.getAsJsonObject();
+			if(obj.has("dependency")){
+				JsonElement dep = obj.get("dependency");
+				if(dep.isJsonArray()){
+					return new Gson().fromJson(obj, Dependencies.class).dependency;
+				}
+			}
+		}else{
+			System.out.println(this.description);
+		}
+		return null;
 	}
 	
 	

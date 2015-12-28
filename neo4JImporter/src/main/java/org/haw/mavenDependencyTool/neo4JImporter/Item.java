@@ -1,5 +1,7 @@
 package org.haw.mavenDependencyTool.neo4JImporter;
 
+import java.util.List;
+
 import com.google.gson.JsonElement;
 
 public class Item {
@@ -30,8 +32,10 @@ public class Item {
 			return version.getAsJsonObject().get("$numberLong").getAsString();
 		}
 		
-		return "";
+		return null;
 	}
+	
+	
 	
 	
 }
