@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>VivaGraphs webgl dynamic graph test page</title>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-red.min.css" />
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="lib/neo.css">
+    <script src="lib/vivagraph.js"></script>
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/cypher.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="app/Neo4jService.js"></script>
+    <script src="app/DataService.js"></script>
+    <script src="app/CircleNode.js"></script>
+    <script src="app/Graph.js"></script>
+    <script src="app/Index.js"></script>
+    <style type='text/css'>
+        .node {
+            background-color: #00a2e8;
+            width: 10px;
+            height: 10px;
+
+        }
+
+        .link {
+            background-color: #dddddd;
+
+        }
+
+        #graph {
+            background-color: rgba(228, 228, 228, 0.29);
+            box-shadow: inset 0px 2px 9px -1px #ccc;
+            width: 100%;
+            height: 600px;
+        }
+
+        .dialog{
+            min-height: 40px;
+            background: rgb(255,82,82);
+            box-shadow: 2px 2px 7px 2px #ccc;
+            border-radius: 1px;
+        }
+
+        .dialog .warn{
+            background: rgb(255,82,82);
+        }
+
+        .dialog .mdl-cell{
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<!-- No header, and the drawer stays open on larger screens (fixed drawer). -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+            mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+        </div>
+    </header>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">UI</span>
+        <nav class="mdl-navigation" id="graphControl">
+            <a class="mdl-navigation__link" v-on:click="select(control.query)" v-for="control in controls" >{{ control.text }}</a>
+        </nav>
+    </div>
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <div class="mdl-grid" id="runQuery">
+                <div class="mdl-cell mdl-cell--12-col dialog warn" v-show="errorText!=''" ><div class="mdl-cell">{{errorText}}</div></div>
+                <div class="mdl-cell mdl-cell--9-col"> <textarea id="code" name="code" placeholder="Query"></textarea></div>
+                <div class="mdl-cell mdl-cell--3-col">
+                    <button v-show="!active" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" v-on:click="run()">
+                        Run
+                    </button>
+                </div>
+                <div v-show="active"  class="mdl-spinner mdl-js-spinner is-active"></div>
+            </div>
+            </span>
+
+            <div id='graph'></div>
+            <div id="graphInfoView">
+                <span>id: {{ nodeID }}</span>
+                <span>key: {{ key }}</span>
+                <span>name: {{ name }}</span>
+                <span>labels: {{ labels }}</span>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+</body>
+</html>
