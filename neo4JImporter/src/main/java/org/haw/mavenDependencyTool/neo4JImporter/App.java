@@ -12,9 +12,10 @@ public class App
 
 //    	neo4JImporter.getMongoData();
     	
-//    	neo4JImporter.importNeo4J(neo4JImporter.getMongoData());
-    neo4JImporter.getMongoData().forEach(p-> {int i = 0;});
-    	neo4JImporter.close();
+   	new Neo4JImportCSV().importNeo4J(neo4JImporter.getMongoData());
+    //neo4JImporter.getMongoData().forEach(p-> {int i = 0;});
+   	neo4JImporter.close();
     	
-    }
+   
+   	}
 }
