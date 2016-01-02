@@ -41,8 +41,9 @@ public class Project {
 			return version.getAsString();
 		else if(version != null)
 			return version.getAsJsonObject().get("$numberLong").getAsString();
-		else
+		else if (parent != null)
 			return parent.getVersion();
+		return null;
 	}
 	
 	public String getGroupId(){
@@ -60,6 +61,11 @@ public class Project {
 	}
 	
 	public List<Item> getDependency(){
+		if(this.dependencies==null)
+			return null;
+		if(this.dependencies.isJsonPrimitive()&&this.dependencies.getAsString().isEmpty()){
+			return null;
+		}
 		if(this.dependencies.isJsonObject()){
 			JsonObject obj = this.dependencies.getAsJsonObject();
 			if(obj.has("dependency")){
@@ -69,7 +75,8 @@ public class Project {
 				}
 			}
 		}else{
-			System.out.println(this.description);
+			
+			System.err.println(this.dependencies);
 		}
 		return null;
 	}

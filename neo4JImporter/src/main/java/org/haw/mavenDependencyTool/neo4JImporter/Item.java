@@ -24,8 +24,8 @@ public class Item {
 		if(version != null && version.isJsonPrimitive())
 			return version.getAsString();
 		else if(version != null){
-			System.out.println(this.toString());
-			System.out.println(version.getAsJsonObject().toString());
+			//System.out.println(this.toString());
+			//System.out.println(version.getAsJsonObject().toString());
 			if(version.getAsJsonObject().has("content")){
 				return version.getAsJsonObject().get("content").getAsString();
 			}else

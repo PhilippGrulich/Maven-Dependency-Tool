@@ -2,6 +2,7 @@ package org.haw.mavenDependencyTool.restServer;
 
 import static spark.Spark.*;
 
+import org.haw.mavenDependencyTool.restServer.routes.DependencyRoute;
 import org.haw.mavenDependencyTool.restServer.routes.Project;
 import org.haw.mavenDependencyTool.restServer.routes.SearchRoute;
 import org.haw.mavenDependencyTool.restServer.util.JsonTransformer;
@@ -26,5 +27,10 @@ public class Server {
 		staticFileLocation("public");
 
 		new SearchRoute(json, mongo);
+		new DependencyRoute(json, mongo);
+		
+		after((request, response) -> {
+		    response.header("Content-Encoding", "gzip");
+		});
 	}
 }

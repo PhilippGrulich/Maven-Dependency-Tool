@@ -37,7 +37,7 @@ $(document).ready(function () {
             errorText: ""
         },
         methods: {
-            run: function () {
+             run: function () {
                 var query = editor.getValue();
                 this.active = true;
                 graph.clear();
