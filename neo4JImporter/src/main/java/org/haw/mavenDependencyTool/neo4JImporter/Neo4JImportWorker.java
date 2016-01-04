@@ -24,6 +24,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -51,8 +54,19 @@ public class Neo4JImportWorker {
 	}
 
 	public Stream<Project> getMongoData() {
-
-		Stream<Document> stream = StreamSupport.stream(collection.find(new Document()).spliterator(), true);
+		
+//		Document query = new Document();
+//		query.append("project.artifactId", "notification-amazon").append("project.version", "3.6.0");
+		DBObject clause1 = new BasicDBObject("project.artifactId", "notification-amazon");  
+		DBObject clause2 = new BasicDBObject("project.artifactId", "aws-java-sdk");    
+		DBObject clause3 = new BasicDBObject("project.artifactId", "commons-validator");    
+		BasicDBList or = new BasicDBList();
+		or.add(clause1);
+		or.add(clause2);
+		or.add(clause3);
+		DBObject query2 = new BasicDBObject("$or", or);
+		Document query = new Document();
+		Stream<Document> stream = StreamSupport.stream(collection.find(query).spliterator(), true);
 		return stream.map(document -> {
 
 			JsonParser parser = new JsonParser();
@@ -64,14 +78,14 @@ public class Neo4JImportWorker {
 				Project project = gson.fromJson(jsonObject.get("project"), Project.class);
 				// TODO nullpointer exception abfangen
 				if (project == null)
-					System.out.println(jsonObject);
+					System.out.println("project null: " + jsonObject);
 				else
 					project.setId(id);
 
 				// System.out.println(project);
 				return project;
 			} catch (Exception e) {
-					System.out.println(document.toJson());
+					System.out.println("Exeption:" +document.toJson());
 					e.printStackTrace();
 			}
 			return null;
