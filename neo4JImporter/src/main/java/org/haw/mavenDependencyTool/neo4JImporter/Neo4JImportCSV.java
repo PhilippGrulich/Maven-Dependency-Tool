@@ -31,13 +31,13 @@ public class Neo4JImportCSV {
 	Neo4JImportCSV() {
 		try {
 
-			data = new PrintWriter(new BufferedWriter(new FileWriter("data/data.csv", false)));
+			data = new PrintWriter(new BufferedWriter(new FileWriter("/tmp/data.csv", false)));
 			// data.println("id:ID;name;:LABEL");
 			artifactsIdSet = new HashSet<>(1000000);
 			groupIDSet = new HashSet<>(1000000);
 			versionSet = new HashSet<>(1000000);
 
-			links = new PrintWriter(new BufferedWriter(new FileWriter("data/links.csv", false)));
+			links = new PrintWriter(new BufferedWriter(new FileWriter("/tmp/links.csv", false)));
 			errorDependendiesWriter = new PrintWriter(new BufferedWriter(new FileWriter("error.csv", false)));
 			// links.println(":START_ID;:END_ID;:TYPE");
 
@@ -60,14 +60,15 @@ public class Neo4JImportCSV {
 				startDate = System.currentTimeMillis();
 			}
 			try {
-				if (project.getVersion() != null && project.artifactId != null && project.getGroupId() != null) {
+				if (project.getVersion() != null && !project.getVersion().contains("$") && project.artifactId != null
+						&& project.getGroupId() != null) {
 					createVersion(project);
 					createArtifact(project);
 					createGroup(project);
 					createArtifactVersionRelation(project);
-					createGroupVersionRelation(project);
+					createGroupArtifactRelation(project);
 					createDependencyRelation(project);
-					//createVersionParentRelation(project);
+					// createVersionParentRelation(project);
 				} else {
 					error++;
 					System.err.println("Cant use this: " + project.toString());
@@ -124,7 +125,7 @@ public class Neo4JImportCSV {
 
 	}
 
-	private void createGroupVersionRelation(Project project) {
+	private void createGroupArtifactRelation(Project project) {
 		String artifactKey = getArtifactKey(project);
 		String linkKey = artifactKey + "_" + project.getGroupId();
 		if (!linksSet.contains(linkKey)) {
@@ -200,7 +201,10 @@ public class Neo4JImportCSV {
 					String dependencyVersionKey = "Version_" + depGroupId + "_" + depArtifactId + "_"
 							+ dependencyVersion;
 					addVersion(dependencyVersion, dependencyVersionKey);
-					links.println(String.format("%s;%s;%s", versionKey, dependencyVersionKey, "nutzt"));
+					if (!linksSet.contains(versionKey + "_nutzt_" + dependencyVersionKey)) {
+						linksSet.add(versionKey + "_nutzt_" + dependencyVersionKey);
+						links.println(String.format("%s;%s;%s", versionKey, dependencyVersionKey, "nutzt"));
+					}
 
 				}
 			}

@@ -22,9 +22,9 @@ public class Item {
 	public String getVersion() {
 		if (version != null && version.isJsonPrimitive()) {
 			String versionString = version.getAsString();
-			if (versionString.contains("$"))
-				return null;
-			else
+//			if (versionString.contains("$"))
+//				return null;
+//			else
 				return versionString;
 		} else if (version != null) {
 			if (version.getAsJsonObject().has("content")) {

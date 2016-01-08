@@ -49,7 +49,7 @@ public class Neo4JImportFileWorker {
 
 	public Stream<Project> getMongoData() throws JsonSyntaxException, IOException {
 		
-		return Files.lines( Paths.get("poms.json")).map(document -> {
+		return Files.lines( Paths.get("/tmp/poms.json")).map(document -> {
 
 			JsonParser parser = new JsonParser();
 			JsonObject jsonObject = parser.parse(document).getAsJsonObject();
