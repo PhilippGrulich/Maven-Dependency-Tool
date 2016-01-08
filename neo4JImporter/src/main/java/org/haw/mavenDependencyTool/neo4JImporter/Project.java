@@ -8,18 +8,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class Project {
+	static Gson gson = new Gson();
 	String id;
 	Item parent;
 	String artifactId;
-	String name;
+	JsonElement name;
 	JsonElement version;
 	String groupId;
-	String description;
+	JsonElement description;
 	JsonElement dependencies;
 	JsonElement dependencyManagement;
 
-	public Project(Item parent, String artifactId, String name,
-			JsonElement version, String groupId, String description,
+	public Project(Item parent, String artifactId, JsonElement name,
+			JsonElement version, String groupId, JsonElement description,
 			JsonElement dependencies, JsonElement dependencyManagement) {
 		super();
 		this.parent = parent;
@@ -27,7 +28,7 @@ public class Project {
 		this.name = name;
 		this.version = version;
 		this.groupId = groupId;
-		//this.description = description;
+		this.description = description;
 		this.dependencies = dependencies;
 		this.dependencyManagement = dependencyManagement;
 	}
@@ -42,8 +43,11 @@ public class Project {
 	}
 
 	public String getVersion() {
-		if (version != null && version.isJsonPrimitive())
-			return version.getAsString();
+		if (version != null && version.isJsonPrimitive()){
+			String  versionString =  version.getAsString();
+			if(!versionString.contains("$"))
+				return versionString;
+		}		
 		else if (version != null) {
 			if (version.getAsJsonObject().has("$numberLong"))
 				return version.getAsJsonObject().get("$numberLong")
@@ -53,7 +57,8 @@ public class Project {
 			else {
 				System.err.println("Not known field " + version);
 			}
-		} else if (parent != null)
+		} 
+		if (parent != null)
 			return parent.getVersion();
 		return null;
 	}
@@ -61,6 +66,8 @@ public class Project {
 	public String getGroupId() {
 		if (groupId != null)
 			return groupId;
+		if(parent==null)
+			return null;
 		return parent.groupId;
 	}
 
@@ -97,7 +104,7 @@ public class Project {
 			if (obj.has("dependency")) {
 				JsonElement dep = obj.get("dependency");
 				if (dep.isJsonArray()) {
-					return new Gson().fromJson(obj, Dependencies.class).dependency;
+					return gson.fromJson(obj, Dependencies.class).dependency;
 				} else if (dep.isJsonObject()) {
 					List<Item> list = new ArrayList<Item>();
 					list.add(new Gson().fromJson(dep, Item.class));

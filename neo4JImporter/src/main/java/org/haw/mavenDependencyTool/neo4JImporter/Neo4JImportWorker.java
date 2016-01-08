@@ -81,6 +81,8 @@ public class Neo4JImportWorker {
 					System.out.println("project null: " + jsonObject);
 				else
 					project.setId(id);
+				
+				//System.out.println(counter++);
 
 				// System.out.println(project);
 				return project;

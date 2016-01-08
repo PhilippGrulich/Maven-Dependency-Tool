@@ -17,3 +17,7 @@ gitHubPomFinder/output.txt
 *.classpath
 
 .recommenders
+neo4JImporter/error.csv
+neo4JImporter/data/
+neo4JImporter/poms.json
+neo4JImporter/archiv
