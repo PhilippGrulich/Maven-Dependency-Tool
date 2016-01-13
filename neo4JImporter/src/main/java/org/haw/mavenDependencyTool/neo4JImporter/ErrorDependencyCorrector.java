@@ -15,7 +15,8 @@ public class ErrorDependencyCorrector {
 	int correctCounter = 0;
 
 	ErrorDependencyCorrector() throws IOException {
-		System.out.println("---------------Fixing dependency errors---------------------");
+		System.out
+				.println("---------------Fixing dependency errors---------------------");
 		Files.lines(Paths.get("/tmp/data.csv")).forEach(nodeString -> {
 			String key = nodeString.split(";")[0].trim();
 			if (!key.startsWith("Version"))
@@ -45,16 +46,13 @@ public class ErrorDependencyCorrector {
 				System.out.println(nodeString);
 			}
 		});
-		links = new PrintWriter(new BufferedWriter(new FileWriter("/tmp/links.csv", true)));
+		links = new PrintWriter(new BufferedWriter(new FileWriter(
+				"/tmp/links.csv", true)));
 		Files.lines(Paths.get("error.csv")).forEach(this::fixError);
 		links.flush();
-		System.out.println("Correct Dependenies" + correctCounter + " ---- Unknown Dependencies" + errorCounter);
+		System.out.println("Correct Dependenies" + correctCounter
+				+ " ---- Unknown Dependencies" + errorCounter);
 	}
-//
-//	public static void main(String[] args) throws IOException {
-//		new ErrorDependencyCorrector();
-//
-//	}
 
 	private void fixError(String error) {
 
@@ -65,7 +63,8 @@ public class ErrorDependencyCorrector {
 			if (nodes.containsKey(tempVersionKey)) {
 				String first = nodes.get(tempVersionKey);
 				if (first != null) {
-					links.println(String.format("%s;%s;%s", key, tempVersionKey + first, "nutzt"));
+					links.println(String.format("%s;%s;%s", key, tempVersionKey
+							+ first, "nutzt"));
 					correctCounter++;
 					return;
 				}

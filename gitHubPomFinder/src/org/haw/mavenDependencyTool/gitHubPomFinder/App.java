@@ -15,6 +15,7 @@ public class App {
 	static int lastID = 0;
 	private static GitHub github;
 	private static Path path;
+
 	public static void main(String[] args) throws IOException {
 
 		 path = Paths.get("output.txt");
@@ -61,7 +62,7 @@ public class App {
 		
 	
 	}
-	
+
 	public static void getAll(){
 		System.out.println("Start Download at "+ lastID);
 		try{

@@ -1,4 +1,4 @@
-package org.haw.mavenDependencyTool.neo4JImporter;
+package org.haw.mavenDependencyTool.datastructs;
 
 import java.util.List;
 
@@ -14,6 +14,5 @@ public class Dependencies {
 	public String toString() {
 		return "Dependencies [dependency=" + dependency.toString() + "]";
 	}
-	
-	
+
 }

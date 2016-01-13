@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.haw.mavenDependencyTool.datastructs.Item;
+import org.haw.mavenDependencyTool.datastructs.Project;
+
 public class Neo4JImportCSV {
 
 	int counter = 0;
@@ -31,18 +34,18 @@ public class Neo4JImportCSV {
 	Neo4JImportCSV() {
 		try {
 
-			data = new PrintWriter(new BufferedWriter(new FileWriter("/tmp/data.csv", false)));
-			// data.println("id:ID;name;:LABEL");
+			data = new PrintWriter(new BufferedWriter(new FileWriter(
+					"/tmp/data.csv", false)));
 			artifactsIdSet = new HashSet<>(1000000);
 			groupIDSet = new HashSet<>(1000000);
 			versionSet = new HashSet<>(1000000);
 
-			links = new PrintWriter(new BufferedWriter(new FileWriter("/tmp/links.csv", false)));
-			errorDependendiesWriter = new PrintWriter(new BufferedWriter(new FileWriter("error.csv", false)));
-			// links.println(":START_ID;:END_ID;:TYPE");
+			links = new PrintWriter(new BufferedWriter(new FileWriter(
+					"/tmp/links.csv", false)));
+			errorDependendiesWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter("error.csv", false)));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -54,13 +57,14 @@ public class Neo4JImportCSV {
 			counter++;
 			if (counter % 500 == 0) {
 				System.out.println("found " + counter + " new objects");
-				// fixError();
-				// System.gc();
-				System.out.println("Time Diff: " + (System.currentTimeMillis() - startDate));
+				System.out.println("Time Diff: "
+						+ (System.currentTimeMillis() - startDate));
 				startDate = System.currentTimeMillis();
 			}
 			try {
-				if (project.getVersion() != null && !project.getVersion().contains("$") && project.artifactId != null
+				if (project.getVersion() != null
+						&& !project.getVersion().contains("$")
+						&& project.getArtifactId() != null
 						&& project.getGroupId() != null) {
 					createVersion(project);
 					createArtifact(project);
@@ -75,7 +79,6 @@ public class Neo4JImportCSV {
 				}
 			} catch (Exception e) {
 				error++;
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
@@ -94,18 +97,19 @@ public class Neo4JImportCSV {
 	}
 
 	private String getVersionKey(Project project, String version) {
-		String key = "Version_" + project.getGroupId() + "_" + project.artifactId + "_" + version;
+		String key = "Version_" + project.getGroupId() + "_"
+				+ project.getArtifactId() + "_" + version;
 		return key;
 	}
 
 	private void createArtifact(Project project) throws SQLException {
-		// Die artifactID ist eindeutig über den key
 		String key = getArtifactKey(project);
 		addArtifact(project, key);
 	}
 
 	private String getArtifactKey(Project project) {
-		String key = "Artifact_" + project.getGroupId() + "_" + project.artifactId;
+		String key = "Artifact_" + project.getGroupId() + "_"
+				+ project.getArtifactId();
 		return key;
 	}
 
@@ -117,10 +121,11 @@ public class Neo4JImportCSV {
 	private void createArtifactVersionRelation(Project project) {
 		String artifactKey = getArtifactKey(project);
 		String versionKey = getVersionKey(project, project.getVersion());
-		String linkKey = project.id + "_" + artifactKey;
+		String linkKey = project.getId() + "_" + artifactKey;
 		if (!linksSet.contains(linkKey)) {
 			linksSet.add(linkKey);
-			links.println(String.format("%s;%s;%s", versionKey, artifactKey, "gehoert_zu"));
+			links.println(String.format("%s;%s;%s", versionKey, artifactKey,
+					"gehoert_zu"));
 		}
 
 	}
@@ -130,21 +135,8 @@ public class Neo4JImportCSV {
 		String linkKey = artifactKey + "_" + project.getGroupId();
 		if (!linksSet.contains(linkKey)) {
 			linksSet.add(linkKey);
-			links.println(String.format("%s;%s;%s", artifactKey, project.getGroupId(), "gehoert_zu"));
-		}
-	}
-
-	private void createVersionParentRelation(Project project) {
-		if (project.parent != null && project.parent.groupId != null && project.parent.artifactId != null
-				&& project.parent.version != null) {
-			String versionKey = getVersionKey(project, project.getVersion());
-			String parentVersionKey = "Version_" + project.parent.groupId + "_" + project.parent.artifactId + "_"
-					+ project.parent.getVersion();
-			String linkKey = (versionKey + "_" + parentVersionKey);
-			if (!linkKey.contains("&") && !linksSet.contains(linkKey)) {
-				linksSet.add(linkKey);
-				links.println(String.format("%s;%s;%s", versionKey, parentVersionKey, "istKindVon"));
-			}
+			links.println(String.format("%s;%s;%s", artifactKey,
+					project.getGroupId(), "gehoert_zu"));
 		}
 	}
 
@@ -156,9 +148,9 @@ public class Neo4JImportCSV {
 
 			for (Item dependency : deps) {
 
-				String depGroupId = dependency.groupId;
+				String depGroupId = dependency.getGroupId();
 				String depVersion = dependency.getVersion();
-				String depArtifactId = dependency.artifactId;
+				String depArtifactId = dependency.getArtifactId();
 
 				// Fix for invalid groupId
 				if (depGroupId == null) {
@@ -175,13 +167,15 @@ public class Neo4JImportCSV {
 					return;
 				}
 				if (depArtifactId.contains("$")) {
-					depArtifactId = project.artifactId;
+					depArtifactId = project.getArtifactId();
 				}
 
 				String dependencyVersion = "";
 				if (depVersion == null) {
-					String tempVersionKey = ("Version_" + depGroupId + "_" + depArtifactId + "_");
-					errorDependendiesWriter.println(versionKey + ";" + tempVersionKey);
+					String tempVersionKey = ("Version_" + depGroupId + "_"
+							+ depArtifactId + "_");
+					errorDependendiesWriter.println(versionKey + ";"
+							+ tempVersionKey);
 				} else {
 
 					if (depVersion.contains("$")) {
@@ -192,18 +186,23 @@ public class Neo4JImportCSV {
 
 					if (dependencyVersion.contains("$")) {
 
-						String tempVersionKey = ("Version_" + depGroupId + "_" + depArtifactId + "_");
+						String tempVersionKey = ("Version_" + depGroupId + "_"
+								+ depArtifactId + "_");
 						System.out.println("tempVersionKey: " + tempVersionKey);
-						errorDependendiesWriter.println(versionKey + ";" + tempVersionKey);
+						errorDependendiesWriter.println(versionKey + ";"
+								+ tempVersionKey);
 						return;
 					}
 
-					String dependencyVersionKey = "Version_" + depGroupId + "_" + depArtifactId + "_"
-							+ dependencyVersion;
+					String dependencyVersionKey = "Version_" + depGroupId + "_"
+							+ depArtifactId + "_" + dependencyVersion;
 					addVersion(dependencyVersion, dependencyVersionKey);
-					if (!linksSet.contains(versionKey + "_nutzt_" + dependencyVersionKey)) {
-						linksSet.add(versionKey + "_nutzt_" + dependencyVersionKey);
-						links.println(String.format("%s;%s;%s", versionKey, dependencyVersionKey, "nutzt"));
+					if (!linksSet.contains(versionKey + "_nutzt_"
+							+ dependencyVersionKey)) {
+						linksSet.add(versionKey + "_nutzt_"
+								+ dependencyVersionKey);
+						links.println(String.format("%s;%s;%s", versionKey,
+								dependencyVersionKey, "nutzt"));
 					}
 
 				}
@@ -215,14 +214,17 @@ public class Neo4JImportCSV {
 	private synchronized void addArtifact(Project project, String key) {
 		if (!artifactsIdSet.contains(key)) {
 			artifactsIdSet.add(key);
-			data.println(String.format("%s;%s;%s;", key, project.artifactId, "artifact"));
+			data.println(String.format("%s;%s;%s;", key, project.getArtifactId(),
+					"artifact"));
 		}
 	}
 
-	private synchronized void addVersion(String dependencyVersion, String dependencyVersionKey) {
+	private synchronized void addVersion(String dependencyVersion,
+			String dependencyVersionKey) {
 		if (!versionSet.contains(dependencyVersionKey)) {
 			versionSet.add(dependencyVersionKey);
-			data.println(String.format("%s;%s;%s;", dependencyVersionKey, dependencyVersion, "version"));
+			data.println(String.format("%s;%s;%s;", dependencyVersionKey,
+					dependencyVersion, "version"));
 		}
 	}
 

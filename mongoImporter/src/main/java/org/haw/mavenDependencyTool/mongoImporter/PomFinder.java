@@ -6,18 +6,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-
-public class PomFinder   {
+public class PomFinder {
 	String rootDir;
+
 	public PomFinder(String rootDir) {
-		this.rootDir=rootDir;
+		this.rootDir = rootDir;
 	}
+
 	public Stream<Path> search() throws IOException {
 		Path path = Paths.get(rootDir);
-		return Files.walk(path, 20).parallel()
-		.filter(p -> 			
-			p.toFile().isFile() && p.toString().endsWith(".pom")
-		);
-			
-	}	
+		return Files
+				.walk(path, 20)
+				.parallel()
+				.filter(p -> p.toFile().isFile()
+						&& p.toString().endsWith(".pom"));
+
+	}
 }

@@ -1,8 +1,5 @@
 package org.haw.mavenDependencyTool.mongoImporter;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -26,29 +23,30 @@ public class MongoImportWorker {
 	int counter = 0;
 
 	MongoImportWorker(Stream<String> stream) {
-		stream.filter(s->!s.isEmpty()).map(this::xmlToJSON).filter(json->json!=null).map(this::json)
+		stream.filter(s -> !s.isEmpty()).map(this::xmlToJSON)
+				.filter(json -> json != null).map(this::json)
 				.map(json -> json.toString()).forEach(this::importInMongoDB);
-		
+
 	}
-	
-	private JSONObject xmlToJSON(String json){
-		try{
+
+	private JSONObject xmlToJSON(String json) {
+		try {
 			return XML.toJSONObject(json);
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.out.println(json);
 			System.out.println(e.getMessage());
 		}
 		return null;
-		
+
 	}
 
+	@SuppressWarnings("unchecked")
 	private JSONObject json(JSONObject json) {
 
 		List<String> keyList = new ArrayList<String>();
 
 		json.keys().forEachRemaining(key -> keyList.add((String) key));
 
-		// json.keys().forEachRemaining(key -> System.out.println(key));
 		for (String keyString : keyList) {
 
 			JSONArray array = json.optJSONArray(keyString);
@@ -60,7 +58,7 @@ public class MongoImportWorker {
 					if (arrayObjs != null) {
 						json(arrayObjs);
 					}
-					
+
 					if (keyString.contains(".")) {
 						json.remove(keyString);
 						json.put(keyString.replaceAll("\\.", "_"), arrayObjs);
@@ -80,17 +78,13 @@ public class MongoImportWorker {
 			}
 
 		}
-		// System.out.println("*");
-		// json.keys().forEachRemaining(key -> System.out.println(key));
-		// System.out.println("************************");
 		return json;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void importInMongoDB(String pomContent) {
-		//System.out.println(pomContent);
 		DBObject dbObject = (DBObject) JSON.parse(pomContent);
 		addDocument(new Document(dbObject.toMap()));
-		 //collection.insertOne(new Document(dbObject.toMap()));
 	}
 
 	public synchronized void addDocument(Document doc) {

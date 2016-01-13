@@ -1,8 +1,5 @@
 package org.haw.mavenDependencyTool.mavenCrawler;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -10,7 +7,7 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 /**
- * Hello world!
+ * Crawler fuer maven.org
  *
  */
 public class Main 

@@ -1,4 +1,4 @@
-package org.haw.mavenDependencyTool.neo4JImporter;
+package org.haw.mavenDependencyTool.datastructs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class Project {
 			JsonElement dependencies, JsonElement dependencyManagement) {
 		super();
 		this.parent = parent;
-		this.artifactId = artifactId;
+		this.setArtifactId(artifactId);
 		this.name = name;
 		this.version = version;
 		this.groupId = groupId;
@@ -36,19 +36,18 @@ public class Project {
 	@Override
 	public String toString() {
 		return "Project [id=" + id + ", parent=" + parent + ", artifactId="
-				+ artifactId + ", name=" + name + ", version=" + version
+				+ getArtifactId() + ", name=" + name + ", version=" + version
 				+ ", groupId=" + groupId + ", description=" + description
 				+ ", dependencies=" + dependencies + ", dependencyManagement="
 				+ dependencyManagement + "]";
 	}
 
 	public String getVersion() {
-		if (version != null && version.isJsonPrimitive()){
-			String  versionString =  version.getAsString();
-			if(!versionString.contains("$"))
+		if (version != null && version.isJsonPrimitive()) {
+			String versionString = version.getAsString();
+			if (!versionString.contains("$"))
 				return versionString;
-		}		
-		else if (version != null) {
+		} else if (version != null) {
 			if (version.getAsJsonObject().has("$numberLong"))
 				return version.getAsJsonObject().get("$numberLong")
 						.getAsString();
@@ -57,7 +56,7 @@ public class Project {
 			else {
 				System.err.println("Not known field " + version);
 			}
-		} 
+		}
 		if (parent != null)
 			return parent.getVersion();
 		return null;
@@ -66,9 +65,9 @@ public class Project {
 	public String getGroupId() {
 		if (groupId != null)
 			return groupId;
-		if(parent==null)
+		if (parent == null)
 			return null;
-		return parent.groupId;
+		return parent.getGroupId();
 	}
 
 	public String getId() {
@@ -84,10 +83,9 @@ public class Project {
 			if (this.dependencyManagement.isJsonObject()) {
 				this.dependencies = this.dependencyManagement.getAsJsonObject()
 						.get("dependencies");
-			} else if(this.dependencyManagement.isJsonPrimitive()){
-				
-			} 
-			else
+			} else if (this.dependencyManagement.isJsonPrimitive()) {
+
+			} else
 				System.out.println("Fehler:" + this.toString());
 		}
 		if (this.dependencies == null)
@@ -96,9 +94,9 @@ public class Project {
 				&& this.dependencies.getAsString().isEmpty()) {
 			return null;
 		}
-		if(this.dependencies.isJsonArray()){
+		if (this.dependencies.isJsonArray()) {
 			this.dependencies = this.dependencies.getAsJsonArray().get(0);
-		 }
+		}
 		if (this.dependencies.isJsonObject()) {
 			JsonObject obj = this.dependencies.getAsJsonObject();
 			if (obj.has("dependency")) {
@@ -113,9 +111,17 @@ public class Project {
 
 			}
 		} else {
-				
+
 			System.err.println(this.dependencies);
 		}
 		return null;
+	}
+
+	public String getArtifactId() {
+		return artifactId;
+	}
+
+	public void setArtifactId(String artifactId) {
+		this.artifactId = artifactId;
 	}
 }
